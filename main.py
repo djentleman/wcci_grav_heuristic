@@ -213,6 +213,7 @@ def renderSearchSpace(screen, grid):
                     screen.set_at((x, y),rgb(translate(grid[x][y], 0, maxima, 0, 255), 0, 0) )
                else:
                     screen.set_at((x, y),rgb(0, 0, translate(grid[x][y], minima, 0, 255, 0) ))
+# NBO utility functions
 
 def initializeNBO(bodies=50, initType='u'):
      # initType - 'u'nufirm, or 'r'andom
