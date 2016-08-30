@@ -8,3 +8,5 @@ dT = 1 # delta time
 cor = 0.2 # Coefficient of restitution, needs to be less than 1
 delay = 0 # delay between iterations
 ui = True # render ui?
+
+rvel = 2 # intial velocity multiplier

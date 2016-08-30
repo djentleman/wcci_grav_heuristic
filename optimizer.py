@@ -1,26 +1,29 @@
 # parent class, high level util functions
 
 import hyperparameters as hp
+import math
+import random
 
 class Optimizer:
 	def __init__(self, bodies=50, initType='u'):
 		self.positions = []
 		self.bodies = bodies
 		self.initType = initType
-		self.initialize(bodies, initType)
+		self.initialize()
 		self.optimizationFunction = None
+		self.bestMaxima = -99999999999
 
 	def initialize(self):
 		# initType - 'u'nufirm, or 'r'andom
 		# update to handle n dimenstional search spaces!!!!
-		if initType == 'u':
+		if self.initType == 'u':
 			perRow = int(math.sqrt(self.bodies)) # this will NOT be sqrt, but the nth root for n dimensional space
 			gap = float(hp.granularity)/(perRow+1)
 			for x in range(perRow):
 				for y in range(perRow):
 					self.positions.append(((x+1)*gap, (y+1)*gap))
 		# print positions
-		elif initType == 'r':
+		elif self.initType == 'r':
 			for i in range(self.bodies):
 				self.positions.append((random.randint(0, hp.granularity-1), random.randint(0, hp.granularity-1)))
 		return self.positions
@@ -32,12 +35,37 @@ class Optimizer:
 	def setupOptimization(self, function):
 		self.optimizationFunction = function
 
+        def getCurrMaxima(self, maxima=-9999999999, pos = (0, 0)):
+             for i in range(len(self.positions)):
+                  x = translate(self.positions[i][0], 0, hp.granularity, hp.lxb, hp.uxb)
+                  y = translate(self.positions[i][1], 0, hp.granularity, hp.lyb, hp.uyb)
+                  fOut = self.optimizationFunction.run([x, y])
+                  if (fOut > maxima):
+                      maxima = fOut
+                      pos = tuple(self.positions[i])
+             if (maxima > self.bestMaxima):
+                 self.bestMaxima = maxima
+             return maxima, pos
+
+        
+
 	## all child classes will have a 'step function', which completes one 
 	## iteration of the optimization algorithm
 
 	## the step function will be called from the main method in the event loop
 
 
+
+
+def translate(value, leftMin, leftMax, rightMin, rightMax):
+    # Figure out how 'wide' each range is
+    leftSpan = leftMax - leftMin
+    rightSpan = rightMax - rightMin
+    # Convert the left range into a 0-1 range (float)
+    valueScaled = float(value - leftMin) / float(leftSpan)
+
+    # Convert the 0-1 range into a value in the right range.
+    return rightMin + (valueScaled * rightSpan)
 
 
 
