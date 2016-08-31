@@ -122,7 +122,7 @@ class NBO(optimizer.Optimizer):
             if npy < 0:
                 npy = 0
                 nvy = -vy*hy.cor
-            self.velocities[i] = (nvy, nvy)
+            self.velocities[i] = (nvx, nvy)
             self.positions[i] = (npx, npy)
 
     def step(self):
