@@ -12,6 +12,7 @@ class Optimizer:
 		self.initialize()
 		self.optimizationFunction = None
 		self.bestMaxima = -99999999999
+		self.iter = 0
 
 	def initialize(self):
 		# initType - 'u'nufirm, or 'r'andom
@@ -45,7 +46,8 @@ class Optimizer:
                       pos = tuple(self.positions[i])
              if (maxima > self.bestMaxima):
                  self.bestMaxima = maxima
-             return maxima, pos
+             #print pos
+             return (maxima, pos)
 
         
 
@@ -66,6 +68,13 @@ def translate(value, leftMin, leftMax, rightMin, rightMax):
 
     # Convert the 0-1 range into a value in the right range.
     return rightMin + (valueScaled * rightSpan)
+
+def getMinkowskiDistance(x, y):
+        # assume 2d
+        if math.sqrt(math.pow(x[0] - y[0], 2) + math.pow(x[1] - y[1], 2)) != 0:
+            return math.sqrt(math.pow(x[0] - y[0], 2) + math.pow(x[1] - y[1], 2))
+        else:
+            return 0.0000000001
 
 
 

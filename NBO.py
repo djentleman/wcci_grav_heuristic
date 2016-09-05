@@ -3,13 +3,13 @@ import hyperparameters as hy
 import functionutils as fu
 import function
 import random
+import math
 
 
 
 class NBO(optimizer.Optimizer):
     def __init__(self, bodies=50, initType='u'):
         optimizer.Optimizer.__init__(self, bodies, initType)
-        #TODO: inherit Optimizer
 
         # initialize NBO specific parameters
         self.defaultZeroMass = 0.0000000001 # 'zero mass' can't actually be zero, or we divide by zero
@@ -54,14 +54,7 @@ class NBO(optimizer.Optimizer):
                         masses.append(0.0000000001)
         self.masses = masses
 
-        ##### TODO - refactor the below code
 
-    def getMinkowskiDistance(x, y):
-        # assume 2d
-        if math.sqrt(math.pow(x[0] - y[0], 2) + math.pow(x[1] - y[1], 2)) != 0:
-            return math.sqrt(math.pow(x[0] - y[0], 2) + math.pow(x[1] - y[1], 2))
-        else:
-            return 0.0000000001
 
     def getForces(self):
         Fs = []
@@ -75,11 +68,11 @@ class NBO(optimizer.Optimizer):
                 s2 = self.positions[j]
                 if i != j:
                     try:
-                        Fx += (G*m1*m2*(s1[0]-s2[0]))/(math.pow(self.getMinkowskiDistance(s1, s2), 2))
+                        Fx += (self.G*m1*m2*(s1[0]-s2[0]))/(math.pow(optimizer.getMinkowskiDistance(s1, s2), 2))
                     except:
                         Fx = 0
                     try:
-                        Fy += (G*m1*m2*(s1[1]-s2[1]))/(math.pow(self.getMinkowskiDistance(s1, s2), 2))
+                        Fy += (self.G*m1*m2*(s1[1]-s2[1]))/(math.pow(optimizer.getMinkowskiDistance(s1, s2), 2))
                     except:
                         Fy = 0
             Fs.append((Fx, Fy))
@@ -134,13 +127,14 @@ class NBO(optimizer.Optimizer):
                 self.velocities[getBesti(self.positions)] = \
                   (self.velocities[getBesti(positions)][0]/self.cvr, self.velocities[getBesti(self.positions)][1]/self.cvr)
         self.updatePositions()
+        self.iter+=1
 
 
 
 
 if __name__ == "__main__":
     # create classifier
-    nbo = NBO(20, 'r');
+    nbo = NBO(200, 'r');
     exLambda = lambda args: -fu.griewank(args[0], args[1]) 
     nbo.setupOptimization(function.Function(exLambda))
     for i in range(100):
