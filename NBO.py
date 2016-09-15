@@ -46,10 +46,10 @@ class NBO(optimizer.Optimizer):
                 masses.append(0.0000000001)
             else:
                 if funcOutput > self.massThreshold:
-                    masses.append((funcOutput-massThreshold)**k)
+                    masses.append((funcOutput-self.massThreshold)**self.k)
                 else:
                     if self.repulsion:
-                        masses.append((funcOutput-massThreshold)*k) # hmm
+                        masses.append((funcOutput-self.massThreshold)*self.k) # hmm
                     else:
                         masses.append(0.0000000001)
         self.masses = masses
@@ -91,15 +91,24 @@ class NBO(optimizer.Optimizer):
             dvy = hy.dT*(float(Fy)/float(m))
             self.velocities[i] = (vx - dvx, vy - dvy)
 
-
+    def getBesti(self):
+        best = self.getCurrMaxima()[0]
+        #print best
+        for i in range(len(self.positions)):
+            x = optimizer.translate(self.positions[i][0], 0, hy.granularity, hy.lxb, hy.uxb)
+            y = optimizer.translate(self.positions[i][1], 0, hy.granularity, hy.lyb, hy.uyb)
+            if self.optimizationFunction.run([x, y]) == best:
+                return i
+        return -1
+    
     def step(self):
         self.getMasses()
         forces = self.getForces()
         self.updateVelocities(forces)
         if self.bestStop:
             if (self.getCurrMaxima()[0] - self.massThreshold > 0):
-                self.velocities[getBesti(self.positions)] = \
-                  (self.velocities[getBesti(positions)][0]/self.cvr, self.velocities[getBesti(self.positions)][1]/self.cvr)
+                self.velocities[self.getBesti()] = \
+                  (self.velocities[self.getBesti()][0]/self.cvr, self.velocities[self.getBesti()][1]/self.cvr)
         self.updatePositions()
         self.iter+=1
 
@@ -109,7 +118,7 @@ class NBO(optimizer.Optimizer):
 if __name__ == "__main__":
     # create classifier
     nbo = NBO(200, 'r');
-    exLambda = lambda args: -fu.griewank(args[0], args[1]) 
+    exLambda = lambda args: -fu.griewank(args[0], args[1])  + 100
     nbo.setupOptimization(function.Function(exLambda))
     for i in range(100):
         print nbo.bestMaxima
