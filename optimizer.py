@@ -1,6 +1,6 @@
 # parent class, high level util functions
 
-import hyperparameters as hp
+import hyperparameters as hy
 import math
 import random
 
@@ -26,7 +26,7 @@ class Optimizer:
 		# print positions
 		elif self.initType == 'r':
 			for i in range(self.bodies):
-				self.positions.append((random.randint(0, hp.granularity-1), random.randint(0, hp.granularity-1)))
+				self.positions.append((random.randint(0, hy.granularity-1), random.randint(0, hy.granularity-1)))
 		return self.positions
 
 	def printout(self):
@@ -38,8 +38,8 @@ class Optimizer:
 
         def getCurrMaxima(self, maxima=-9999999999, pos = (0, 0)):
              for i in range(len(self.positions)):
-                  x = translate(self.positions[i][0], 0, hp.granularity, hp.lxb, hp.uxb)
-                  y = translate(self.positions[i][1], 0, hp.granularity, hp.lyb, hp.uyb)
+                  x = translate(self.positions[i][0], 0, hy.granularity, hy.lxb, hy.uxb)
+                  y = translate(self.positions[i][1], 0, hy.granularity, hy.lyb, hy.uyb)
                   fOut = self.optimizationFunction.run([x, y])
                   if (fOut > maxima):
                       maxima = fOut
@@ -48,6 +48,33 @@ class Optimizer:
                  self.bestMaxima = maxima
              #print pos
              return (maxima, pos)
+
+        def updatePositions(self):
+            for i in range(len(self.positions)):
+                sx = self.positions[i][0]
+                sy = self.positions[i][1]
+                vx = self.velocities[i][0]
+                vy = self.velocities[i][1]
+                dsx = vx*hy.dT
+                dsy = vy*hy.dT
+                npx = sx + dsx
+                npy = sy + dsy
+                nvx = vx
+                nvy = vy
+                if npx > hy.granularity:
+                    npx = hy.granularity
+                    nvx = -vx*hy.cor
+                if npx < 0:
+                    npx = 0
+                    nvx = -vx*hy.cor
+                if npy > hy.granularity:
+                    npy = hy.granularity
+                    nvy = -vy*hy.cor
+                if npy < 0:
+                    npy = 0
+                    nvy = -vy*hy.cor
+                self.velocities[i] = (nvx, nvy)
+                self.positions[i] = (npx, npy)
 
         
 

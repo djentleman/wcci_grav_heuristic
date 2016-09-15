@@ -91,32 +91,6 @@ class NBO(optimizer.Optimizer):
             dvy = hy.dT*(float(Fy)/float(m))
             self.velocities[i] = (vx - dvx, vy - dvy)
 
-    def updatePositions(self):
-        for i in range(len(self.positions)):
-            sx = self.positions[i][0]
-            sy = self.positions[i][1]
-            vx = self.velocities[i][0]
-            vy = self.velocities[i][1]
-            dsx = vx*hy.dT
-            dsy = vy*hy.dT
-            npx = sx + dsx
-            npy = sy + dsy
-            nvx = vx
-            nvy = vy
-            if npx > hy.granularity:
-                npx = hy.granularity
-                nvx = -vx*hy.cor
-            if npx < 0:
-                npx = 0
-                nvx = -vx*hy.cor
-            if npy > hy.granularity:
-                npy = hy.granularity
-                nvy = -vy*hy.cor
-            if npy < 0:
-                npy = 0
-                nvy = -vy*hy.cor
-            self.velocities[i] = (nvx, nvy)
-            self.positions[i] = (npx, npy)
 
     def step(self):
         self.getMasses()
