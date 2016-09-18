@@ -80,6 +80,9 @@ class Optimizer:
 
 	## all child classes will have a 'step function', which completes one 
 	## iteration of the optimization algorithm
+        def step(self):
+            self.iter+=1
+            self.getCurrMaxima()
 
 	## the step function will be called from the main method in the event loop
 

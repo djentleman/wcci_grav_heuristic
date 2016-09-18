@@ -14,7 +14,14 @@ import optimizer
 import NBO
 import PSO
 import GA
-import RS 
+import RS
+
+
+# modified heuristics
+import NBO_Decay
+
+# hyperheuristics
+import Particle_Decay_HH
 
 
 def compare(optimizers, func, ui=True, itmax=-1, dump=False, dumpEachIter=False):
@@ -200,6 +207,7 @@ def main():
     # define a set of optimizers
     # each one is a dict with parameters - color, name, optimizer object
     optimizers = []
+    """
     optimizers.append({
         'name': 'NBO-10',
         'particle_color': rgb(0, 255, 0),
@@ -215,11 +223,33 @@ def main():
         'optimizer': NBO.NBO(15, 'r'),
         'enabled': True
         })
+    """
     optimizers.append({
-        'name': 'NBO-30',
+        'name': 'NBO-20',
         'particle_color': rgb(255, 125, 0),
         'trail_color': rgb(100, 50, 0),
-        'optimizer': NBO.NBO(30, 'r'),
+        'optimizer': NBO.NBO(20, 'r'),
+        'enabled': True
+        })
+    optimizers.append({
+        'name': 'NBO_Decay-20',
+        'particle_color': rgb(0, 125, 255),
+        'trail_color': rgb(0, 50, 100),
+        'optimizer': NBO_Decay.NBO_Decay(20, 'r'),
+        'enabled': True
+        })
+    optimizers.append({
+        'name': 'NBO_Increase-20',
+        'particle_color': rgb(0, 255, 255),
+        'trail_color': rgb(0, 100, 100),
+        'optimizer': NBO_Decay.NBO_Decay(20, 'r', decayRate=-0.01),
+        'enabled': True
+        })
+    optimizers.append({
+        'name': 'PSO-20',
+        'particle_color': rgb(255, 255, 255),
+        'trail_color': rgb(100, 100, 100),
+        'optimizer': PSO.PSO(20, 'r'),
         'enabled': True
         })
     # pass into compare functionn, along with configuration params

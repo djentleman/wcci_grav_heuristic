@@ -8,14 +8,14 @@ import math
 
 
 class NBO(optimizer.Optimizer):
-    def __init__(self, bodies=50, initType='u'):
+    def __init__(self, bodies=50, initType='u', G=1):
         optimizer.Optimizer.__init__(self, bodies, initType)
 
         # initialize NBO specific parameters
         self.defaultZeroMass = 0.0000000001 # 'zero mass' can't actually be zero, or we divide by zero
         ##### 4 configurable parameters mentioned in the paper #####
         self.k = 2 # used to force attractive forces to overpower repulsive forces
-        self.G = 1 # gravitational constant
+        self.G = G # gravitational constant
         self.cvr = 10 # centroid velocity reduction
         self.massThreshold = 0 # when the fitness of a particle is configured, this is where the boundary between
         # positive and negative masses lies

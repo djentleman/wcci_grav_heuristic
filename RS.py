@@ -14,6 +14,7 @@ class RS(optimizer.Optimizer):
         self.updatePositions()
         self.velocities = [(2*50*(random.random()-0.5), 2*50*(random.random()-0.5)) for x in self.positions]
         self.getCurrMaxima()
+        self.iter+=1
         
 if __name__ == "__main__":
     rs = RS(20, 'r');

@@ -59,6 +59,7 @@ class GA(optimizer.Optimizer):
     def step(self):
         self.iterateGA()
         self.getCurrMaxima()
+        self.iter+=1
 
 
 def posToGenome((x, y)):
